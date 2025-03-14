@@ -9,7 +9,7 @@ html {
   height: 100vh;
 }
 body {
-  background-image: url(/img/background-blue-light.jpg);
+  background-image: url(../img/background-blue-light.jpg);
   background-position: center;
   background-size: cover;
   width: 100%;
