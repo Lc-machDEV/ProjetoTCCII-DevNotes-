@@ -85,16 +85,22 @@ fetch('./api/criar_tarefa.php', {
     body: dados_titulo 
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-        return response.json();
+        return response.json().then(data => {
+            return {
+                response: response,
+                data: data
+            };
+        });
     })
-    .then(data => {
-        console.log('Dados recebidos:', data);
+    .then(resultado => {
+        console.log('Status da resposta:', resultado.response.status);
+        console.log('Dados recebidos:', resultado.data);
+        if (!resultado.response.ok) {
+            throw new Error(`Erro HTTP: ${resultado.response.status}. ${resultado.data.mensagem}`);
+        }
     })
     .catch(error => {
-        console.error('Erro ao enviar os dados:', error);
+        console.error('Erro ao enviar os dados.', error.message);
     })
 }),
 document.addEventListener("click", (a) => {
