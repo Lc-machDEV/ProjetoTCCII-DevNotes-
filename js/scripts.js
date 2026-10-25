@@ -75,8 +75,27 @@ filterTodos = (a) => {
 };
 todoForm.addEventListener("submit", (a) => {
 a.preventDefault();
-const b = todoInput.value;
-b && saveTodo(b);
+// const b = todoInput.value;
+// b && saveTodo(b);
+//const form = document.getElementById(todoForm);
+
+const dados_titulo = new FormData(todoForm);
+fetch('./api/criar_tarefa.php', {
+    method: 'POST',
+    body: dados_titulo 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Dados recebidos:', data);
+    })
+    .catch(error => {
+        console.error('Erro ao enviar os dados:', error);
+    })
 }),
 document.addEventListener("click", (a) => {
 const b = a.target,

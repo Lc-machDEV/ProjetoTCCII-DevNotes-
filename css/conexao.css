@@ -1,0 +1,24 @@
+.sucesso {
+    background-color: #44c576;
+    color: #fff;
+    padding: 10px;
+    width: auto;
+    margin: auto;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.erro {
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 10px;
+    width: auto;
+    margin: auto;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.titulo {
+    color: #59aed7;
+    text-decoration: underline;
+}

@@ -22,10 +22,10 @@
             </i>
             por Lucas Machado</h5>
         </header>
-        <form id="todo-form">
+        <form id="todo-form" action="./api/criar_tarefa.php" method="POST">
             <p>Adicione sua tarefa:</p>
             <div class="form-control">
-                <input type="text" id="todo-input" placeholder="Adicionar">
+                <input type="text" id="todo-input" name="titulo" placeholder="Adicionar">
                 <button type="submit">
                     <i class="fa-thin fa-plus"></i>
                 </button>
