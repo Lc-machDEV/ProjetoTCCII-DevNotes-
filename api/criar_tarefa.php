@@ -39,11 +39,6 @@
         $dados_tarefas['mensagem'] = 'Tarefa criada com sucesso.';
         echo json_encode($dados_tarefas);
         } catch (PDOException $e) {
-            error_log(
-                $e->getMessage() . PHP_EOL,
-                3,
-                __DIR__ . '/erros.log'
-            );
             http_response_code(500); // Internal Server Error
             $dados_tarefas['status'] = false;
             $dados_tarefas['mensagem'] = 'Erro ao criar a tarefa.';

@@ -98,6 +98,7 @@ fetch('./api/criar_tarefa.php', {
         if (!resultado.response.ok) {
             throw new Error(`Erro HTTP: ${resultado.response.status}. ${resultado.data.mensagem}`);
         }
+        saveTodo(resultado.data.titulo, 0, 1);
     })
     .catch(error => {
         console.error('Erro ao enviar os dados.', error.message);
