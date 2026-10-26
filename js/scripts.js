@@ -8,11 +8,11 @@ searchInput = document.querySelector("#search-input"),
 eraseBtn = document.querySelector("#erase-button"),
 filterBtn = document.querySelector("#filter-select");
 let oldInputValue;
-const saveTodo = (a, b = 0, c = 1) => {
+const saveTodo = (titulo, concluida = 0, salvarLocalmente = 1) => {
     const d = document.createElement("div");
     d.classList.add("todo");
     const e = document.createElement("h3");
-    (e.innerText = a), d.appendChild(e);
+    (e.innerText = titulo), d.appendChild(e);
     const f = document.createElement("button");
     f.classList.add("finish-todo"),
     (f.innerHTML = '<i class="fa-solid fa-check"></i>'),
@@ -25,8 +25,8 @@ const saveTodo = (a, b = 0, c = 1) => {
     h.classList.add("remove-todo"),
     (h.innerHTML = '<i class="fa-solid fa-xmark"></i>'),
     d.appendChild(h),
-    b && d.classList.add("done");
-    c && saveTodoLocalStorage({ text: a, done: b });
+    concluida && d.classList.add("done");
+    salvarLocalmente && saveTodoLocalStorage({ text: titulo, done: concluida });
     todoList.appendChild(d), (todoInput.value = ""), todoInput.focus();
 },
 toggleForms = () => {
@@ -34,49 +34,49 @@ toggleForms = () => {
     todoForm.classList.toggle("hide"),
     todoList.classList.toggle("hide");
 },
-updateTodo = (a) => {
-    const b = document.querySelectorAll(".todo");
-    b.forEach((b) => {
-    let c = b.querySelector("h3");
-    c.innerText === oldInputValue &&
-        ((c.innerText = a), updateTodoLocalStorage(oldInputValue, a));
+updateTodo = (titulo) => {
+    const concluida = document.querySelectorAll(".todo");
+    concluida.forEach((concluida) => {
+    let salvarLocalmente = concluida.querySelector("h3");
+    salvarLocalmente.innerText === oldInputValue &&
+        ((salvarLocalmente.innerText = titulo), updateTodoLocalStorage(oldInputValue, titulo));
     });
 },
-getSearchTodos = (a) => {
-    const b = document.querySelectorAll(".todo");
-    b.forEach((b) => {
-    let c = b.querySelector("h3").innerText.toLocaleLowerCase();
-    const d = a.toLocaleLowerCase();
-    (b.style.display = "flex"), c.includes(d) || (b.style.display = "none");
+getSearchTodos = (titulo) => {
+    const concluida = document.querySelectorAll(".todo");
+    concluida.forEach((concluida) => {
+    let salvarLocalmente = concluida.querySelector("h3").innerText.toLocaleLowerCase();
+    const d = titulo.toLocaleLowerCase();
+    (concluida.style.display = "flex"), salvarLocalmente.includes(d) || (concluida.style.display = "none");
     });
 },
-filterTodos = (a) => {
-    const b = document.querySelectorAll(".todo");
-    switch (a) {
+filterTodos = (titulo) => {
+    const concluida = document.querySelectorAll(".todo");
+    switch (titulo) {
     case "all":
-        b.forEach((a) => (a.style.display = "flex"));
+        concluida.forEach((titulo) => (titulo.style.display = "flex"));
         break;
     case "done":
-        b.forEach((a) =>
-        a.classList.contains("done")
-            ? (a.style.display = "flex")
-            : (a.style.display = "none")
+        concluida.forEach((titulo) =>
+        titulo.classList.contains("done")
+            ? (titulo.style.display = "flex")
+            : (titulo.style.display = "none")
         );
         break;
     case "todo":
-        b.forEach((a) =>
-    a.classList.contains("done")
-            ? (a.style.display = "none")
-            : (a.style.display = "flex")
+        concluida.forEach((titulo) =>
+    titulo.classList.contains("done")
+            ? (titulo.style.display = "none")
+            : (titulo.style.display = "flex")
         );
         break;
     default:
     }
 };
-todoForm.addEventListener("submit", (a) => {
-a.preventDefault();
-// const b = todoInput.value;
-// b && saveTodo(b);
+todoForm.addEventListener("submit", (titulo) => {
+titulo.preventDefault();
+// const concluida = todoInput.value;
+// concluida && saveTodo(concluida);
 //const form = document.getElementById(todoForm);
 
 const dados_titulo = new FormData(todoForm);
@@ -103,66 +103,66 @@ fetch('./api/criar_tarefa.php', {
         console.error('Erro ao enviar os dados.', error.message);
     })
 }),
-document.addEventListener("click", (a) => {
-const b = a.target,
-c = b.closest("div");
+document.addEventListener("click", (titulo) => {
+const concluida = titulo.target,
+salvarLocalmente = concluida.closest("div");
 let d;
-    c && c.querySelector("h3") && (d = c.querySelector("h3").innerText),
-    b.classList.contains("finish-todo") &&
-        (c.classList.toggle("done"), updateTodoStatusLocalStorage(d)),
-    b.classList.contains("remove-todo") &&
-        (c.remove(), removeTodoLocalStorage(d)),
-    b.classList.contains("edit-todo") &&
+    salvarLocalmente && salvarLocalmente.querySelector("h3") && (d = salvarLocalmente.querySelector("h3").innerText),
+    concluida.classList.contains("finish-todo") &&
+        (salvarLocalmente.classList.toggle("done"), updateTodoStatusLocalStorage(d)),
+    concluida.classList.contains("remove-todo") &&
+        (salvarLocalmente.remove(), removeTodoLocalStorage(d)),
+    concluida.classList.contains("edit-todo") &&
         (toggleForms(), (editInput.value = d), (oldInputValue = d));
 }),
-cancelEditBtn.addEventListener("click", (a) => {
-    a.preventDefault(), toggleForms();
+cancelEditBtn.addEventListener("click", (titulo) => {
+    titulo.preventDefault(), toggleForms();
 }),
-editForm.addEventListener("submit", (a) => {
-    a.preventDefault();
-    const b = editInput.value;
-    b && updateTodo(b), toggleForms();
+editForm.addEventListener("submit", (titulo) => {
+    titulo.preventDefault();
+    const concluida = editInput.value;
+    concluida && updateTodo(concluida), toggleForms();
 }),
-searchInput.addEventListener("keyup", (a) => {
-    const b = a.target.value;
-    getSearchTodos(b);
+searchInput.addEventListener("keyup", (titulo) => {
+    const concluida = titulo.target.value;
+    getSearchTodos(concluida);
 }),
-eraseBtn.addEventListener("click", (a) => {
-    a.preventDefault(),
+eraseBtn.addEventListener("click", (titulo) => {
+    titulo.preventDefault(),
 (searchInput.value = ""),
 searchInput.dispatchEvent(new Event("keyup"));
 }),
-filterBtn.addEventListener("change", (a) => {
-    const b = a.target.value;
-    filterTodos(b);
+filterBtn.addEventListener("change", (titulo) => {
+    const concluida = titulo.target.value;
+    filterTodos(concluida);
 });
 const getTodosLocalStorage = () => {
-    const a = JSON.parse(localStorage.getItem("todos")) || [];
-    return a;
+    const titulo = JSON.parse(localStorage.getItem("todos")) || [];
+    return titulo;
 },
 loadTodos = () => {
-    const a = getTodosLocalStorage();
-    a.forEach((a) => {
-saveTodo(a.text, a.done, 0);
+    const titulo = getTodosLocalStorage();
+    titulo.forEach((titulo) => {
+saveTodo(titulo.text, titulo.done, 0);
     });
 },
-saveTodoLocalStorage = (a) => {
-    const b = getTodosLocalStorage();
-    b.push(a), localStorage.setItem("todos", JSON.stringify(b));
+saveTodoLocalStorage = (titulo) => {
+    const concluida = getTodosLocalStorage();
+    concluida.push(titulo), localStorage.setItem("todos", JSON.stringify(concluida));
 },
-removeTodoLocalStorage = (a) => {
-    const b = getTodosLocalStorage(),
-c = b.filter((b) => b.text !== a);
-    localStorage.setItem("todos", JSON.stringify(c));
+removeTodoLocalStorage = (titulo) => {
+    const concluida = getTodosLocalStorage(),
+salvarLocalmente = concluida.filter((concluida) => concluida.text !== titulo);
+    localStorage.setItem("todos", JSON.stringify(salvarLocalmente));
 },
-updateTodoStatusLocalStorage = (a) => {
-    const b = getTodosLocalStorage();
-    b.map((b) => (b.text === a ? (b.done = !b.done) : null)),
-    localStorage.setItem("todos", JSON.stringify(b));
+updateTodoStatusLocalStorage = (titulo) => {
+    const concluida = getTodosLocalStorage();
+    concluida.map((concluida) => (concluida.text === titulo ? (concluida.done = !concluida.done) : null)),
+    localStorage.setItem("todos", JSON.stringify(concluida));
 },
-updateTodoLocalStorage = (a, b) => {
-    const c = getTodosLocalStorage();
-    c.map((c) => (c.text === a ? (c.text = b) : null)),
-localStorage.setItem("todos", JSON.stringify(c));
+updateTodoLocalStorage = (titulo, concluida) => {
+    const salvarLocalmente = getTodosLocalStorage();
+    salvarLocalmente.map((salvarLocalmente) => (salvarLocalmente.text === titulo ? (salvarLocalmente.text = concluida) : null)),
+localStorage.setItem("todos", JSON.stringify(salvarLocalmente));
 };
 loadTodos();
