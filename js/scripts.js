@@ -25,8 +25,8 @@ const saveTodo = (titulo, concluida = 0, salvarLocalmente = 1) => {
     h.classList.add("remove-todo"),
     (h.innerHTML = '<i class="fa-solid fa-xmark"></i>'),
     d.appendChild(h),
-    concluida && d.classList.add("done");
-    salvarLocalmente && saveTodoLocalStorage({ text: titulo, done: concluida });
+    concluida && d.classList.add("concluida");
+    salvarLocalmente && saveTodoLocalStorage({ titulo: titulo, concluida: concluida });
     todoList.appendChild(d), (todoInput.value = ""), todoInput.focus();
 },
 toggleForms = () => {
@@ -56,16 +56,16 @@ filterTodos = (titulo) => {
     case "all":
         concluida.forEach((titulo) => (titulo.style.display = "flex"));
         break;
-    case "done":
+    case "concluida":
         concluida.forEach((titulo) =>
-        titulo.classList.contains("done")
+        titulo.classList.contains("concluida")
             ? (titulo.style.display = "flex")
             : (titulo.style.display = "none")
         );
         break;
     case "todo":
         concluida.forEach((titulo) =>
-    titulo.classList.contains("done")
+    titulo.classList.contains("concluida")
             ? (titulo.style.display = "none")
             : (titulo.style.display = "flex")
         );
@@ -110,7 +110,7 @@ salvarLocalmente = concluida.closest("div");
 let d;
     salvarLocalmente && salvarLocalmente.querySelector("h3") && (d = salvarLocalmente.querySelector("h3").innerText),
     concluida.classList.contains("finish-todo") &&
-        (salvarLocalmente.classList.toggle("done"), updateTodoStatusLocalStorage(d)),
+        (salvarLocalmente.classList.toggle("concluida"), updateTodoStatusLocalStorage(d)),
     concluida.classList.contains("remove-todo") &&
         (salvarLocalmente.remove(), removeTodoLocalStorage(d)),
     concluida.classList.contains("edit-todo") &&
@@ -142,10 +142,31 @@ const getTodosLocalStorage = () => {
     return titulo;
 },
 loadTodos = () => {
-    const titulo = getTodosLocalStorage();
-    titulo.forEach((titulo) => {
-saveTodo(titulo.text, titulo.done, 0);
-    });
+    fetch('./api/listar_tarefas.php') 
+    .then(response => {
+        return response.json().then(data => {
+            return {
+                response: response,
+                data: data
+            };
+        });
+    })
+    .then(tarefas => {
+        if (!tarefas.response.ok) {
+            throw new Error(`Erro HTTP: ${tarefas.response.status}. ${tarefas.data.mensagem}`);
+        }
+        if (!Array.isArray(tarefas.data)) {
+            throw new Error('Os dados recebidos da API não são um array válido.');
+        }
+        tarefas.data.forEach((tarefa) => {
+            saveTodo(tarefa.titulo, tarefa.concluida, 0);
+        });
+        console.log('Status da resposta:', tarefas.response.status);
+        console.log('Dados recebidos:', tarefas.data);
+    })
+    .catch(error => {
+        console.error('Erro ao enviar os dados.', error.message);
+    })
 },
 saveTodoLocalStorage = (titulo) => {
     const concluida = getTodosLocalStorage();
@@ -153,17 +174,17 @@ saveTodoLocalStorage = (titulo) => {
 },
 removeTodoLocalStorage = (titulo) => {
     const concluida = getTodosLocalStorage(),
-salvarLocalmente = concluida.filter((concluida) => concluida.text !== titulo);
+salvarLocalmente = concluida.filter((concluida) => concluida.titulo !== titulo);
     localStorage.setItem("todos", JSON.stringify(salvarLocalmente));
 },
 updateTodoStatusLocalStorage = (titulo) => {
     const concluida = getTodosLocalStorage();
-    concluida.map((concluida) => (concluida.text === titulo ? (concluida.done = !concluida.done) : null)),
+    concluida.map((concluida) => (concluida.titulo === titulo ? (concluida.concluida = !concluida.concluida) : null)),
     localStorage.setItem("todos", JSON.stringify(concluida));
 },
 updateTodoLocalStorage = (titulo, concluida) => {
     const salvarLocalmente = getTodosLocalStorage();
-    salvarLocalmente.map((salvarLocalmente) => (salvarLocalmente.text === titulo ? (salvarLocalmente.text = concluida) : null)),
+    salvarLocalmente.map((salvarLocalmente) => (salvarLocalmente.titulo === titulo ? (salvarLocalmente.titulo = concluida) : null)),
 localStorage.setItem("todos", JSON.stringify(salvarLocalmente));
 };
 loadTodos();
